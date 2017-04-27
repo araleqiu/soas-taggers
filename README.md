@@ -1,5 +1,9 @@
 # soas-taggers
 
+This repo contains taggers and taggings that arose as part of an AHRC-funded
+project based at SOAS from 2012-2015. For further details, please see
+[Tibetan in Digital Communication](https://www.soas.ac.uk/cia/tibetanstudies/tibetan-in-digital-communications/).
+
 ## Part-of-speech taggers
 
 The *taggers* directory includes two part-of-speech taggers.

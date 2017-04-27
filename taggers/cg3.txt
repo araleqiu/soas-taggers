@@ -1,0 +1,1114 @@
+# Sentence delimiter
+DELIMITERS = "<།>";
+
+# POS shorthands
+LIST invar = v.invar n.v.invar ;
+LIST fut.past = v.fut.v.past n.v.fut.n.v.past ;
+LIST fut.pres = v.fut.v.pres n.v.fut.n.v.pres ;
+LIST past.pres = v.past.v.pres n.v.past.n.v.pres ;
+LIST v.xxx = v.aux v.cop v.cop.neg v.fut v.imp v.neg v.past v.pres ;
+LIST n.v.xxx = n.v.aux n.v.cop n.v.fut n.v.imp n.v.neg n.v.past n.v.pres ;
+SET verbal = v.xxx OR n.v.xxx ;
+LIST aux = v.aux n.v.aux ;
+LIST cop = v.cop v.cop.neg n.v.cop ;
+LIST fut = v.fut n.v.fut ;
+LIST past = v.past n.v.past ;
+LIST pres = v.pres n.v.pres ;
+SET non.past = verbal - past ;
+SET aux.cop.past = aux OR cop OR past ;
+SET aux.fut.pres = aux OR fut OR pres ;
+LIST n.xxx = /^n[.](?!v[.]).*$/r ;
+LIST num.xxx = /^num[.].*$/r ;
+LIST d.xxx = /^d[.].*$/r ;
+LIST p.xxx = /^p[.].*$/r ;
+LIST case.xxx = /^case[.].*$/r ;
+LIST cv.xxx = /^cv[.].*$/r ;
+LIST abl = case.abl cv.abl ;
+LIST agn = case.agn cv.agn ;
+LIST all = case.all cv.all ;
+LIST ass = case.ass cv.ass ;
+LIST ela = case.ela cv.ela ;
+LIST gen = case.gen cv.gen ;
+LIST loc = case.loc cv.loc ;
+LIST term = case.term cv.term ;
+
+# Complex verbs (monosyllabic)
+SET v.invar_v.imp_v.past = ("<(ཕངས་?)>"r) ;
+SET v.fut.v.pres_v.past = ("<(ཞུ་?)>"r) ;
+SET v.invar_v.pres = ("<(ཟ་?|སྐྱ་?|སྐྱོང་?)>"r) ;
+SET v.invar_v.past = ("<(གཤགས་?|བོར་?|མཆིས་?|གཏོགས་?|ཆེས་?|ཕངས་?|གཏམས་?|ཕྱིས་?|བཅས་?)>"r) ;
+SET v.invar_v.fut.v.pres = ("<(འབྱོར་?|ཡོང་?)>"r) ;
+SET v.past.v.pres_v.past = ("<(བཞག་?|གཤགས་?|བོར་?|མཆིས་?|གཏོགས་?|ཆེས་?)>"r) ;
+SET v.past.v.pres_v.pres = ("<(སྐྱོང་?)>"r) ;
+SET v.fut.v.past_v.past = ("<(བྱོན་?)>") ;
+SET v.fut.v.pres_v.pres = ("<(ཟ་?|འཇུག་?|འཇོ་?)>"r) ;
+SET v.fut.v.pres_v.fut = ("<(གཞིག་?)>"r) ;
+SET v.fut_v.fut.v.past = ("<བྲི་?>"r) ;
+SET n.v.fut.n.v.pres_n.v.past = ("<(ཞུ་བ་?)>"r) ;
+SET n.v.invar_n.v.pres = ("<(ཟ་བ་?|སྐྱ་བ་?|འཇོ་བ་?)>"r) ;
+SET n.v.invar_n.v.fut = ("<(བཙོག་པ་?)>"r) ;
+SET n.v.invar_n.v.past = ("<(རིངས་པ་?|གཏོགས་པ་?|མཆིས་པ་?|ཆེས་པ་?)>"r) ;
+SET n.v.fut.n.v.pres_n.v.pres = ("<(ཟ་བ་?|འཇུག་པ་?|འཇོ་བ་?)>"r) ;
+SET n.v.past.n.v.pres_n.v.pres = ("<(རྟོག་པ་?)>"r) ;
+SET n.v.past_n.v.pres = ("<(བཞག་པ་?|འབོགས་པ་?)>"r) ;
+
+# Verbal nouns of interest (disyllabic)
+SET nlr.pa = ("<.+[ནལར]་པ་?>"r) ;
+SET nlr.ba = ("<.+[ནལར]་བ་?>"r) ;
+
+# Tokens of interest (monosyllabic)
+SET nlr = ("<.+([ནལར])་>"r) ;
+LIST ma = "<མ་>" ;
+LIST mi = "<མི་>" ;
+SET mami = ma OR mi ;
+SET gen = ("<(འི|ཀྱི|གི|གྱི|ཡི)་?>"r) ;
+SET shad = ("<[།༔༎༏༐༑]+>"r) ;
+SET tshegful = ("<.+་>"r) ;
+SET tshegless = ("<.*[^་]>"r) - shad;
+SET tshegless.g = ("<.*ག>"r) ;
+SET tshegless.g.exception = ("<ད?ག>"r) ;
+SET shad.or.g = shad OR tshegless.g ;
+SET verba.dicendi = ("<(ཞེས|སྙམ|ཟེར|ཞུ|གསུངས|གསུང|ཞུས)>"r) ;
+SET cig = ("<(ཞིག|ཅིག|ཤིག)་?>"r) ;
+
+#000: Assign default tag to unknown words
+SUBSTITUTE (undefined) (n.invar) (undefined);
+
+#001: Preventing novel tags from being introduced as mistakes
+STRICT-TAGS += adj adv.dir adv.intense adv.mim adv.proclausal adv.temp case.abl case.agn case.all case.ass case.comp case.ela case.gen case.loc case.nare case.term cl.focus cl.quot cv.abl cv.agn cv.all cv.are cv.ass cv.cont cv.ela cv.fin cv.gen cv.imp cv.impf cv.loc cv.odd cv.ques cv.rung cv.sem cv.term d.dem d.det d.emph d.indef d.plural d.tsam interj n.count n.mass n.prop n.rel n.v.aux n.v.cop n.v.fut n.v.fut.n.v.past n.v.fut.n.v.pres n.v.imp n.v.invar n.v.neg n.v.past n.v.past.n.v.pres n.v.pres neg num.card num.ord numeral p.indef p.interrog p.pers p.refl punc skt v.aux v.cop v.cop.neg v.fut v.fut.v.past v.fut.v.pres v.imp v.invar v.neg v.past v.past.v.pres v.pres ;
+STRICT-TAGS += undefined ;
+STRICT-TAGS += dunno ;
+STRICT-TAGS += n.invar ;
+
+#002: Preventing monosyllabic adjectives entering by mistake
+REMOVE (adj) (0 ("<[^་]+་?>"r)) (NOT 0 ("<(གང་?|མཆོག་?)>"r)) ;
+
+#002x: Preventing adjectives ending in med-pa entering by mistake
+
+#003: Decomposing the tags [v.invar] and [n.v.invar]
+APPEND ("$1"v v.fut) TARGET ("<(.*)>"r) (0 (v.invar)) ;
+APPEND ("$1"v v.past) TARGET ("<(.*)>"r) (0 (v.invar)) ;
+APPEND ("$1"v v.pres) TARGET ("<(.*)>"r) (0 (v.invar)) ;
+APPEND ("$1"v n.v.fut) TARGET ("<(.*)>"r) (0 (n.v.invar)) ;
+APPEND ("$1"v n.v.past) TARGET ("<(.*)>"r) (0 (n.v.invar)) ;
+APPEND ("$1"v n.v.pres) TARGET ("<(.*)>"r) (0 (n.v.invar)) ;
+REMOVE invar ;
+
+#004: Decomposing the tags [v.fut.v.past] and [n.v.fut.n.v.past]
+APPEND ("$1"v v.fut) TARGET ("<(.*)>"r) (0 (v.fut.v.past)) ;
+APPEND ("$1"v v.past) TARGET ("<(.*)>"r) (0 (v.fut.v.past)) ;
+APPEND ("$1"v n.v.fut) TARGET ("<(.*)>"r) (0 (n.v.fut.n.v.past)) ;
+APPEND ("$1"v n.v.past) TARGET ("<(.*)>"r) (0 (n.v.fut.n.v.past)) ;
+REMOVE fut.past ;
+
+#005: Decomposing the tags [v.fut.v.pres] and [n.v.fut.n.v.pres]
+APPEND ("$1"v v.fut) TARGET ("<(.*)>"r) (0 (v.fut.v.pres)) ;
+APPEND ("$1"v v.pres) TARGET ("<(.*)>"r) (0 (v.fut.v.pres)) ;
+APPEND ("$1"v n.v.fut) TARGET ("<(.*)>"r) (0 (n.v.fut.n.v.pres)) ;
+APPEND ("$1"v n.v.pres) TARGET ("<(.*)>"r) (0 (n.v.fut.n.v.pres)) ;
+REMOVE fut.pres ;
+
+#006: Decomposing the tags [v.past.v.pres] and [n.v.past.n.v.pres]
+APPEND ("$1"v v.past) TARGET ("<(.*)>"r) (0 (v.past.v.pres)) ;
+APPEND ("$1"v v.pres) TARGET ("<(.*)>"r) (0 (v.past.v.pres)) ;
+APPEND ("$1"v n.v.past) TARGET ("<(.*)>"r) (0 (n.v.past.n.v.pres)) ;
+APPEND ("$1"v n.v.pres) TARGET ("<(.*)>"r) (0 (n.v.past.n.v.pres)) ;
+REMOVE past.pres ;
+
+#007: Limiting verb stems to single syllable
+REMOVE v.xxx (0 ("<.+་.+>"r)) ;
+
+#008: Limiting verbal nouns to disyllables
+REMOVE n.v.xxx (NOT 0 ("<[^་]+་(པ|བ|རྒྱུ|ཐབས|ལུགས|གྲབས|ཚུལ|ཚད|མཁན|ས|མི|བྱ|ཐེངས|སྟབས)་?>"r)) ;
+
+#009: Removing the &#039;dunno&#039; tag
+REMOVE (dunno) ;
+
+#010: Disambiguating graṅs [n.count] and graṅs [v.pres]
+SELECT (n.count) (0 ("<གྲངས་>")) (1 ("<མེད་པ་?>"r)) ;
+
+#011: Disambiguating ṅa [p.pers] and ṅa [n.count]
+REMOVE (n.count) (0 ("<ང་>")) (NOT 1 ("<རྒྱལ(་བ)?་?>"r)) ;
+
+#012: Isolating da [adv.temp] lta
+SELECT (adv.temp) (0 ("<ད་>")) (1 ("<ལྟ་?>"r)) ;
+
+#013: Distinguishing ches [v.past] from ches [adv.intense]
+REMOVE (adv.intense) (0 ("<ཆེས་>")) (NOT 1 (adj) OR verbal) ;
+
+#014a: Specifying tu and du as converbs after śin
+REMOVE (case.term) (-1C (adv.intense) LINK 0 ("<ཤིན་>")) (0 ("<(དུ|ཏུ)་?>"r)) ;
+
+#014b: Specifying tu and du as converbs after rab
+SELECT (adv.intense) (0 ("<རབ་>")) (1 ("<(དུ|ཏུ)་?>"r)) ;
+REMOVE (case.term) (-1 ("<རབ་>")) (0 ("<(དུ|ཏུ)་?>"r)) ;
+
+#014x: Specifying rtag tu as [v.fut.v.pres]
+SELECT (v.fut.v.pres) (0 ("<རྟག་>")) (1 ("<ཏུ་>")) ;
+SELECT (cv.term) (-1 ("<རྟག་>")) (0 ("<ཏུ་>")) ;
+
+#015a: Isolating rgya [n.count] che r
+SELECT (n.count) (0 ("<རྒྱ་>")) (1 ("<ཆེ>")) (2 ("<ར་>")) ;
+
+#015b: Isolating rgya as a noun
+REMOVE v.xxx OR (adv.temp) (0 ("<རྒྱ་>")) (1 ("<ཆེ(་བ)?་?>"r)) ;
+
+#015xa: Isolating sems as a noun
+REMOVE v.xxx (0 ("<སེམས་>")) (1 ("<འཁྲུགས་>")) ;
+
+#015xb: Isolating byin as a noun
+REMOVE v.xxx (0 ("<བྱིན་>")) (1 ("<ཆེ་བ་?>"r)) ;
+
+#015xx: Precluding źig [cv.impf]
+REMOVE (cv.impf) (NOT -1C v.xxx) (0 ("<ཞིག་>")) (NOT 1C v.xxx) ;
+
+#015xxx: Tagging the mistaken passage བསམ་ གྱི་ མི་ ཁྱབ་ བོ
+SELECT (n.count) (0 ("<བསམ་>")) (1 ("<གྱི་>")) (2 ("<མི་>")) (3 ("<ཁྱབ་>")) (4 ("<བོ>")) ;
+SELECT (case.agn) (-1 ("<བསམ་>")) (0 ("<གྱི་>")) (1 ("<མི་>")) (2 ("<ཁྱབ་>")) (3 ("<བོ>")) ;
+SELECT (neg) (-2 ("<བསམ་>")) (-1 ("<གྱི་>")) (0 ("<མི་>")) (1 ("<ཁྱབ་>")) (2 ("<བོ>")) ;
+REMOVE (*) - (v.fut) OR (v.pres) (-3 ("<བསམ་>")) (-2 ("<གྱི་>")) (-1 ("<མི་>")) (0 ("<ཁྱབ་>")) (1 ("<བོ>")) ;
+SELECT (cv.fin) (-4 ("<བསམ་>")) (-3 ("<གྱི་>")) (-2 ("<མི་>")) (-1 ("<ཁྱབ་>")) (0 ("<བོ>")) ;
+
+#016: Isolating gtan as a noun
+REMOVE v.xxx (0 ("<གཏན་>")) (1 ("<ལ་>")) (2 ("<(དབབ|ཕེབ|ཕབ|འབེབས)(་པ)?་?>"r)) ;
+
+#016xa: Isolating re as a noun
+REMOVE (d.det) OR (p.indef) OR (num.card) OR (v.fut) OR (v.past) (0 ("<རེ་>")) (1 ("<(ཞིག|ཅིག|ཤིག)་?>"r)) ;
+
+#016xb: Isolating re as a noun
+REMOVE (n.count) (0 ("<རེ་>")) (NOT 1 ("<(ཞིག|ཅིག|ཤིག)་?>"r)) ;
+
+#016xc: Isolating re as a number
+SELECT KEEPORDER (num.card) (-1 ("<(.+)>"r)) (0 ("<རེ་>")) (1 ("<$1>"v)) (2 ("<དོ་>")) ;
+
+#016xd: Isolating re as a number
+REMOVE KEEPORDER (num.card) (-1 ("<(.+)>"r)) (0 ("<རེ་>")) (NEGATE 1 ("<$1>"v) LINK 1 ("<དོ་>")) ;
+
+#017a: Precluding daṅ [v.invar]
+REMOVE v.xxx (0 ("<དང་>")) (1 ("<(ཕྲད|མཇལ|ལྡན|བཅས|འདྲ|བསྲེ|བསྡོས|མཚུངས)(་[པབ])?་?>"r)) ;
+
+#017b: Precluding daṅ [v.invar]
+REMOVE v.xxx (-1C d.xxx OR n.xxx OR n.v.xxx OR num.xxx OR p.xxx) (0 ("<དང་>")) (1C d.xxx OR n.xxx OR n.v.xxx OR num.xxx OR p.xxx) ;
+
+#018a: Isolating phyin [n.count]
+REMOVE (v.past) (0 ("<ཕྱིན་>")) (1 ("<དྲུག་?>"r)) ;
+
+#018b: Isolating phyin [n.count]
+REMOVE (n.count) (0 ("<ཕྱིན་>")) (NOT 1 ("<དྲུག་?>"r)) ;
+
+#019a: Precluding na as a verb
+REMOVE v.xxx (-1C v.xxx) (0 ("<ན་?>"r)) (1C (cl.focus) OR (punc)) ;
+
+#019b: Precluding na [v.invar]
+REMOVE v.xxx (-2 ("<འི་>")) (-1 ("<(ཚེ་|དུས་|ནང་)>"r)) (0 ("<ན་?>"r)) ;
+
+#019c: Precluding na [v.invar]
+REMOVE v.xxx (0 ("<ན་>")) (1 ("<བཞུགས་?>"r)) ;
+
+#019d: Precluding na [v.invar]
+SELECT (case.loc) (-2 ("<དེ་བ>")) (-1 ("<ས་>")) (0 ("<ན་?>"r)) ;
+SELECT (case.loc) (-2 ("<གཅིག་>")) (-1 ("<ཏུ་>")) (0 ("<ན་?>"r)) ;
+SELECT (case.loc) (-2 ("<དཔེ>")) (-1 ("<ར་>")) (0 ("<ན་?>"r)) ;
+
+#020a: Disambiguating [n.rel] and [n.count]
+REMOVE (n.rel) (0 (n.count)) (1C (adj) OR (num.ord)) ;
+
+#020b: Distinguishing [n.rel] from [n.count]
+REMOVE (n.rel) (-1 ("<དང་>")) (0 (n.count)) ;
+
+#020c: Distinguishing [n.rel] from [n.count]
+REMOVE (n.rel) (-1C (cv.sem)) (0 (n.count)) ;
+
+#021a: Disambiguating skad [n.rel] and skad [n.count]
+SELECT (n.rel) (-1 ("<འདི་>")) (0 ("<སྐད་>")) (1 ("<ཅེས་?>"r)) ;
+
+#021b: Disambiguating skad [n.rel] and skad [n.count] and de [d.dem] from de [cv.sem]
+SELECT (d.dem) (0 ("<དེ་>")) (1 ("<སྐད་>")) (2 ("<སྨྲས་?>"r)) ;
+SELECT (n.rel) (-1 ("<དེ་>")) (0 ("<སྐད་>")) (1 ("<སྨྲས་?>"r)) ;
+SELECT (v.past) (-2 ("<དེ་>")) (-1 ("<སྐད་>")) (0 ("<སྨྲས་?>"r)) ;
+
+#021c: Isolating skad [n.count]
+SELECT (n.count) (0 ("<སྐད་>")) (1 ("<ཅིག་>")) ;
+SELECT (d.indef) (-1 ("<སྐད་>")) (0 ("<ཅིག་>")) ;
+
+#021d: Isolating skad [n.count]
+SELECT (n.count) (-2 ("<རྒྱ་གར་>")) (-1 ("<གྱི་>")) (0 ("<སྐད་>")) (1 ("<དུ་>")) ;
+
+#022: Isolating lta [n.rel]
+SELECT (n.rel) (-1 ("<(དེ་|ཇི་|འདི་)>"r)) (0 ("<ལྟ>")) (1 ("<ར་?>"r)) ;
+SELECT (case.term) (-2 ("<(དེ་|ཇི་|འདི་)>"r)) (-1 ("<ལྟ>")) (0 ("<ར་?>"r)) ;
+
+#023a: Isolating skor [n.rel]
+REMOVE (v.imp) (-2C (adj) OR (n.count) OR (n.mass) OR (n.prop)) (-1 gen) (0 (n.rel)) ;
+
+#023b: Isolating skor [n.rel]
+REMOVE (v.imp) (0 (n.rel)) (1 ("<(ཀྱི|ཏེ)་?>"r)) ;
+REMOVE (v.imp) (0 (n.rel)) (1 ("<(གོ|ཏོ||དོ|བོ|མོ|རོ|ལོ|སོ)་?>"r)) (2 shad) ;
+
+#024a: Isolating chos [n.count]
+REMOVE (v.imp) (-2C (adj) OR (n.count) OR (n.mass) OR (n.prop)) (-1 gen) (0 (n.count)) ;
+
+#024b: Isolating chos [n.count]
+REMOVE (v.imp) (0 (n.count)) (1 ("<(ཀྱི|ཏེ)་?>"r)) ;
+REMOVE (v.imp) (0 (n.count)) (1 ("<(གོ|ཏོ||དོ|བོ|མོ|རོ|ལོ|སོ)་?>"r)) (2 shad) ;
+
+#024c: Isolating chos [n.count]
+
+#024x: Isolating phyag [n.count]
+
+#024x: Precluding ḥdra [n.rel]
+REMOVE (n.rel) (-1 ("<དང་>")) (0 ("<འདྲ་?>"r)) ;
+
+#025: Precluding dpag [n.count]
+REMOVE (n.count) (0 ("<དཔག་>")) (1 ("<ཏུ་>")) (2 ("<མེད(་པ)?་?>"r)) ;
+REMOVE (case.term) (-1 ("<དཔག་>")) (0 ("<ཏུ་>")) (1 ("<མེད(་པ)?་?>"r)) ;
+
+#026a: Isolating ḥphro [n.rel]
+SELECT (n.rel) (-1C v.xxx) (0 ("<འཕྲོ་>")) (1 ("<ལ་?>"r)) ;
+SELECT (case.all) (-2C v.xxx) (-1 ("<འཕྲོ་>")) (0 ("<ལ་?>"r)) ;
+
+#026b: Precluding ḥphro [n.rel]
+REMOVE (n.rel) (NOT -1 v.xxx) (0 ("<འཕྲོ་>")) ;
+
+#027a: Isolating bar [n.count]
+SELECT (n.count) (0 ("<བར་>")) (1 ("<(ཆད|ཆོད)(་པ)?་?>"r)) ;
+SELECT (n.count) (0 ("<བར་>")) (1 ("<(མི་|མ་)>"r)) (2 ("<(ཆད|ཆོད)(་པ)?་?>"r)) ;
+
+#027b: Isolating bar [n.count]
+SELECT (n.count) (0 ("<བར་>")) (1 ("<འགའ་>")) ;
+
+#027c: Isolating bar [d.dem]
+SELECT (d.dem) (-1 shad) (0 ("<བར་>")) (1 ("<(དུ་|ན་|ནས་)>"r)) ;
+
+#028a: Isolating yun riṅ [n.count]
+REMOVE (adv.temp) (0 ("<ཡུན་རིང་>")) (1 ("<(དུ|ཞིགདུས)་?>"r)) ;
+
+#028b: Isolating yun riṅ [adv.temp]
+REMOVE (n.count) (0 ("<ཡུན་རིང་>")) (1C verbal) ;
+REMOVE (n.count) (0 ("<ཡུན་རིང་>")) (1 ("<(མ་|མི་)>"r)) (2C verbal) ;
+
+#029: Remove [v.fut] from ḥjug in the causative construction
+REMOVE (v.fut) (-2C v.xxx) (-1C (cv.term)) (0 ("<འཇུག་?>"r)) ;
+
+#030a: Specifying saṅs and rgyas as past in saṅs rgyas
+REMOVE non.past (0 past + ("<སངས་>")) (1 past + ("<རྒྱས(?:་པ)?་?>"r)) ;
+REMOVE non.past (-1 past + ("<སངས་>")) (0 past + ("<རྒྱས(?:་པ)?་?>"r)) ;
+
+#030b: Specifying ḥtshaṅ and rgya as non-past in ḥtshaṅ rgya
+REMOVE (v.past) (-1 v.xxx + ("<འཚང་>")) (0 ("<རྒྱ་?>"r)) ;
+
+#031: Specifying za as [v.pres] after zan &#039;food&#039; and other words
+SELECT pres (-1 ("<(ཟན་|ཤ་|ཟས་)>"r)) (0 ("<ཟ(་བ)?་?>"r)) ;
+SELECT pres (-2 ("<(ཟན་|ཤ་|ཟས་)>"r)) (-1 ("<མི་>")) (0 ("<ཟ(་བ)?་?>"r)) ;
+
+#032a: Specifying źu as not [v.past] after lan &#039;reply&#039; (and other words)
+REMOVE past (-1 ("<(དབང་ཆོས་|མཐུ་ཆེན་|དབང་མོ་ཆེ་|གྲོང་འཇུག་|དངོས་སྣང་|ཞེས་|ཅེས་)>"r)) (0 ("<ཞུ(་བ)?་?>"r)) ;
+
+#032b: Specifying źu as not [v.past] after nominalized verbs in the terminative
+REMOVE past (-2C n.v.xxx LINK 0 ("<.*[པབ]>"r)) (-1 ("<ར་>")) (0 ("<ཞུ(་བ)?་?>"r)) ;
+
+#033a: Precluding sbyin as [v.past]
+REMOVE (v.past) (NOT -1 ("<མ་>")) (0 ("<སྦྱིན་?>"r)) ;
+
+#033b: Precluding gzuṅ as [v.past]
+REMOVE (v.past) (0 ("<གཟུང་?>"r)) (NOT 1 ("<ནས་>")) ;
+
+#033x: Specifying bcas as [v.past]
+SELECT (v.past) (-1 ("<ཡི་དམ་>")) (0 ("<བཅས་?>"r)) ;
+
+#034a: Isolating numerals that happen to look like verbs
+REMOVE v.xxx (0 ("<བཅོ་>") LINK 0 (num.card)) (1 ("<(ལྔ|བརྒྱད)་?>"r)) ;
+
+#034b: Isolating numerals that happen to look like verbs
+REMOVE (v.fut) (0 (num.card)) (1C (num.card)) ;
+
+#034c: Isolating lṅa as a number
+
+#034d: Isolating morphemes used in the formation of numerals
+SELECT (num.card) (-1C (num.card)) (1C (num.card)) ;
+
+#034e: Isolating morphemes used in the formation of numerals
+SELECT (num.card) (-1C (num.card)) (1C (num.ord)) ;
+
+#034f: Precluding the interpretation of certain nouns as morphemes used in the formation of numerals
+REMOVE (num.card) (0 ("<(རྩ་|སོ་|ང་|དོན་)>"r)) (NOT 1 num.xxx) ;
+
+#036a: Disambiguating yaṅ [cl.focus] from yaṅ [adv.proclausal]
+REMOVE (cl.focus) (0 ("<ཡང་>")) (1 ("<ན་?>"r)) ;
+
+#036b: Disambiguating yaṅ [cl.focus] from yaṅ [adv.proclausal]
+REMOVE (cl.focus) OR v.xxx (0 ("<ཡང་>")) (1 ("<(དང་|ལ་|ནས་)>"r)) (2 ("<ཡང་?>"r)) ;
+REMOVE (cl.focus) OR v.xxx (-2 ("<ཡང་>")) (-1 ("<(དང་|ལ་|ནས་)>"r)) (0 ("<ཡང་?>"r)) ;
+REMOVE (cl.focus) OR v.xxx (0 ("<ཡང་>")) (1 ("<ཡང་?>"r)) ;
+REMOVE (cl.focus) OR v.xxx (-1 ("<ཡང་>")) (0 ("<ཡང་?>"r)) ;
+
+#036c: Disambiguating yaṅ [cl.focus] from yaṅ [adv.proclausal]
+REMOVE (adv.proclausal) (-2C v.xxx) (-1 ("<ན་>")) (0 ("<ཡང་>")) (1 shad) ;
+
+#036d: Disambiguating yaṅ [cl.focus] from yaṅ [adv.proclausal]
+REMOVE (cl.focus) (-1 shad.or.g) (0 ("<ཡང་?>"r)) ;
+
+#036e: Disambiguating yaṅ [cl.focus] from yaṅ [adv.proclausal]
+REMOVE (adv.proclausal) (-2 ("<ཤིན་>")) (-1 ("<ཏུ་>")) (0 ("<ཡང་?>"r)) ;
+
+#036f: Disambiguating yaṅ [cl.focus] from yaṅ [adv.proclausal]
+REMOVE (adv.proclausal) (0 ("<ཡང་?>"r)) (1 shad) ;
+
+#036g: Disambiguating yaṅ [cl.focus] from yaṅ [adv.proclausal]
+REMOVE (cl.focus) (-1 ("<.*[གདབས]>"r)) (0 ("<ཡང་?>")) ;
+
+#036h: Disambiguating yaṅ [cl.focus] from yaṅ [adv.proclausal]
+REMOVE (adv.proclausal) (-1C (adj) OR d.xxx OR n.xxx OR num.xxx OR p.xxx OR verbal) (0 ("<ཡང་?>"r)) ;
+
+#036i: Disambiguating yaṅ [cl.focus] from yaṅ [adv.proclausal]
+REMOVE (adv.proclausal) OR v.xxx (-2C v.xxx) (-1 ("<ན་>")) (0 ("<ཡང་?>"r)) ;
+
+#037a: Isolating ḥo na [adv.proclausal]
+SELECT (adv.proclausal) (-1 shad.or.g) (0 ("<འོ་>")) (1 ("<ན་>")) ;
+
+#037b: Precluding ḥo na [adv.proclausal]
+REMOVE (adv.proclausal) (0 ("<འོ་>")) (NOT 1 ("<ན་?>"r) OR ("<ལགས་?>"r)) ;
+
+#038: Isolating gal [adv.proclausal]
+SELECT (adv.proclausal) (0 ("<གལ་>")) (1 ("<ཏེ་?>"r)) ;
+SELECT (cv.sem) (-1 ("<གལ་>")) (0 ("<ཏེ་?>"r)) ;
+
+#039a: Isolating la [adv.proclausal] and la [n.count]
+REMOVE all (-1 shad.or.g) (0 ("<ལ་>")) ;
+
+#039b: Isolating la [adv.proclausal] and la [n.count]
+REMOVE (adv.proclausal) (0 ("<ལ་?>"r)) (1 shad) ;
+
+#040: Isolating ḥon [adv.proclausal]
+REMOVE v.xxx (-1 shad.or.g) (0 ("<འོང་>")) (1 ("<ཀྱང་?>"r)) ;
+
+#041a: Finding the final converb using sandhi and sentence breaks
+SELECT KEEPORDER (cv.fin) (-1 ("<.+(.)་>"r)) (0 ("<$1ོ>"v) OR ("<$1ོ་>"v)) (1 shad OR verba.dicendi) ;
+
+#041b: Finding the final converb -go before sentence breaks
+SELECT (cv.fin) (-1 ("<.+ག་>"r)) (0 ("<གོ>")) ;
+
+#041c: Finding the final converb - ḥo before sentence breaks
+SELECT (cv.fin) (0 ("<འོ་?>"r)) (1 shad OR verba.dicendi) ;
+
+#041d: Finding words that are homophonous with forms of the final converb
+REMOVE KEEPORDER (cv.fin) (-1 ("<.+(.)་>"r)) (NOT 0 (VSTR:"<$1ོ་?>"r)) ;
+
+#041e: Finding words that are homophonous with forms of the final converb
+REMOVE (cv.fin) (0 (n.count)) (1C gen) ;
+
+#041f: Finding words that are homophonous with forms of the final converb: lo &#039;year&#039;
+SELECT (n.count) (-1C num.xxx) (0 ("<ལོ་?>"r)) ;
+
+#042a: Isolating the question converb
+SELECT KEEPORDER (cv.ques) (-1 ("<.+(.)་>"r)) (0 (VSTR:"<$1མ་?>"r)) (1 shad OR verba.dicendi) ;
+
+#042b: Finding words that are homophonous with forms of the question converb
+REMOVE KEEPORDER (cv.ques) (-1 ("<.+(.)་>"r)) (NOT 0 (VSTR:"<$1མ་?>"r)) ;
+
+#043a: Distinguishing de [cv.sem] from de [d.dem]
+REMOVE (cv.sem) (NOT -1 ("<.+ད་>")) (0 ("<དེ་?>"r)) ;
+
+#043b: Isolating the semi-final converb before śad
+REMOVE (d.dem) (-1C v.xxx) (0 (cv.sem)) (1 shad) ;
+
+#044a: Identifying when ར་ is [n.count] rather than [case.term] or [cv.term]
+REMOVE term (-1 tshegful OR shad) (0 ("<ར་>")) ;
+REMOVE term (-1 tshegless.g LINK NOT 0 tshegless.g.exception) (0 ("<ར་>")) ;
+
+#044b: Identifying when ར་ is [case.term] or [cv.term] rather than [n.count]
+REMOVE n.xxx OR (skt) (-1 tshegless - tshegless.g.exception) (0 term LINK 0 ("<ར་?>"r)) ;
+
+#044c: Identifying when ར་ is [case.term] or [cv.term] rather than [n.count]
+
+#045a: Identifying when -s ས་ is sa ས་ &#039;earth&#039; [n.count] and not the case suffix [case.agn]
+REMOVE (case.agn) (-1 ("<.*་>"r) OR shad.or.g) (NOT -1 ("<(\S+་)?(ག|འག|དག)>"r)) (0 ("<ས་>")) ;
+
+#045b: Isolating -s ས་ as the case suffix [case.agn]
+REMOVE n.xxx OR (skt) (-1 tshegless) (0 (case.agn) LINK 0 ("<ས་?>"r)) ;
+
+#045c: Isolating -s ས་ as the case suffix [case.agn]
+
+#046: Isolating nouns that are ambiguous with verbs in verbal positions, lus and don
+REMOVE v.xxx (-2C (n.count)) (-1 ("<དང་>")) (0 ("<(ལུས་|དོན་)>"r)) ;
+
+#047a: Isolating verbs that are ambiguous with nouns
+REMOVE n.xxx (NOT -1 (case.gen)) (0 v.xxx) (NOT 0 ("<ལྟ་>")) (1C (cv.fin) OR (cv.impf) OR (cv.sem)) ;
+
+#047b: Isolating verbs that are ambiguous with nouns
+REMOVE (n.count) (NOT -1 gen) (0 v.xxx) (1 ("<(ཤིང་|ཞིང་)>"r)) (2C (punc)) ;
+
+#047c: Isolating verbs that are ambiguous with nouns
+REMOVE (n.count) (-2 ("<(ཤིན་|རབ་)>"r)) (-1 ("<ཏུ་>")) (0 v.xxx) ;
+
+#047d: Isolating verbs that are ambiguous with nouns, gnas
+REMOVE (n.count) (NOT -2 ("<ཕྱི>")) (-1C term) (0 ("<གནས་>") LINK 0 v.xxx) ;
+
+#047e: Isolating verbs that are ambiguous with nouns, ḥgyur
+REMOVE (n.count) (-1C term) (0 ("<འགྱུར་?>"r) LINK 0 v.xxx) ;
+REMOVE (n.count) (-2C term) (-1 ("<(མི་|ཡང་)>"r)) (0 ("<འགྱུར་?>"r) LINK 0 v.xxx) ;
+
+#047f: Isolating verbs that are ambiguous with nouns, thag [v.aux]
+REMOVE (n.count) (-2C v.xxx) (-1 ("<མ་>")) (0 ("<ཐག་?>"r)) ;
+
+#047g: Isolating verbs that are ambiguous with nouns, gsuṅ and zer
+REMOVE (n.count) (-2C v.xxx LINK 0 (v.imp)) (-1 ("<(ཅིག་|ཤིག་|ཞིག་)>"r)) (0 ("<(གསུང|ཟེར)་?>"r) LINK 0 v.xxx) ;
+
+#047h: Isolating verbs that are ambiguous with nouns, gsuṅ and zer
+REMOVE (n.count) (-2C v.xxx) (-1 ("<མོད་>")) (0 ("<(གསུང|ཟེར)་?>"r) LINK 0 v.xxx) ;
+
+#048a: Isolating nouns that look like verbs by locating the heads of noun phrases
+REMOVE v.xxx (0 n.xxx) (1C (adj) OR d.xxx OR num.xxx) (NEGATE 1 ("<གཅིག་>") LINK 1 ("<ལ་>") LINK 1 ("<གཅིག་?>"r)) ;
+REMOVE v.xxx (0 n.xxx) (1C (adj) OR d.xxx OR num.xxx) (NOT 1 ("<ཚུ་>")) ;
+
+#048b: Isolating nouns that look like verbs by locating the indefinite marker
+REMOVE (v.fut) (0 n.xxx) (1 cig) ;
+
+#048c: Isolating nouns that look like verbs by locating the indefinite marker
+REMOVE (v.pres) OR (v.past) (NOT -1 ma) (0 n.xxx) (1 cig) ;
+
+#048d: Isolating nouns that look like verbs by locating a preceding genitive
+REMOVE v.xxx (-2C d.xxx OR n.xxx OR num.xxx OR p.xxx OR (adj)) (-1 (case.gen)) (0 n.xxx) ;
+
+#048e: Isolating nouns that look like verbs by locating a preceding daṅ [case.ass]
+REMOVE v.xxx (-1 ("<དང་>")) (0 (n.count)) (NOT 0 ("<(གསུང|ཟེར|ཆས|བསྲེ)་?>"r)) ;
+
+#048f: Isolating verbs that look like nouns by locating a preceding daṅ [cv.ass]
+REMOVE (n.count) (-2C (v.imp)) (-1 ("<དང་>")) (0 ("<(གསུང|ཟེར)་?>"r)) ;
+
+#048g: Isolating the noun ñams with phrasal verbs
+REMOVE v.xxx (0 ("<ཉམས་>") LINK 0 (n.count)) (1 ("<སུ་>")) (2 ("<(མྱོང|ལེན)(་[བཔ])?་?>"r)) ;
+
+#049a: Isolating the nouns śiṅ &#039;wood&#039; and źiṅ &#039;field&#039;
+REMOVE (cv.impf) (0 ("<(ཤིང་|ཞིང་)>"r)) (1C gen) ;
+
+#049c: Isolating the źiṅ [cv.impf] after adverbs
+REMOVE (n.count) (-2 ("<ཕྱི>")) (-1 ("<ར་>")) (0 ("<ཞིང་>")) ;
+REMOVE (n.count) (-2 ("<ཕྱི་ཕྱི>")) (-1 ("<ར་>")) (0 ("<ཞིང་>")) ;
+
+#049d: Isolating the noun śiṅ &#039;tree&#039; and źiṅ &#039;field&#039;
+REMOVE (cv.impf) (NOT 1 v.xxx) (0 ("<(ཤིང་|ཞིང་)>"r) LINK 0 (n.count)) ;
+
+#050a: Isolating the noun thag
+REMOVE v.xxx (0 ("<ཐག་>")) (1 ("<(ཆོད|གཅོད|བཅད)(་པ)་?>"r)) ;
+
+#050b: Isolating the noun phan &#039;benefit&#039;
+REMOVE v.xxx (0 ("<ཕན་>")) (1 ("<(འདོགས|བཏགས|གདགས)(་པ)་?>"r)) ;
+
+#050c: Isolating the noun thugs
+REMOVE (v.imp) (0 ("<ཐུགས་>")) (1 ("<(གཏུམ|ཁྲོས|སྐྲག|བརྩེ|དགྱེས)(་པ)?་>"r)) ;
+
+#050d: Isolating bya [n.count] and bya [v.fut]
+REMOVE (n.count) (-1C (cl.quot)) (0 ("<བྱ་>")) (1 ("<སྟེ་?>"r)) ;
+
+#050e: Isolating theṅs [n.count]
+REMOVE (v.past) (0 ("<ཐེངས་>") LINK 0 (n.count)) (1 (num.ord)) ;
+
+#050f: Isolating theg-pa [n.count]
+REMOVE n.v.xxx (0 ("<ཐེག་པ་>")) (1 ("<ཆེན་པོ་?>"r)) ;
+
+#050g: Isolating srid [n.count]
+SELECT (n.count) (0 ("<སྲིད་>")) (1 ("<ཀྱི་>")) (2 ("<རྒྱལ་པོ་?>"r)) ;
+
+#051: Isolating relator nouns that look like verbs
+REMOVE v.xxx (-1 (case.gen)) (0 (n.rel)) ;
+
+#052: Isolating verbs that look like relator nouns
+REMOVE (n.rel) (-1C n.v.xxx) (0 ("<འདྲ་?>"r)) (1 shad) ;
+
+#053a: Isolating nouns that happen to resemble imperative verbs
+REMOVE (v.imp) (-1C (case.gen)) (0 (n.count)) ;
+
+#053b: Isolating nouns that happen to resemble imperative verbs
+REMOVE (v.imp) (-1 shad.or.g) (0 (n.count)) (NEGATE 1 ("<(ཅིག་|ཤིག་|ཞིག་)>"r) LINK 1 ("<(དང་|(ཅེས|གསུང|ཟེར|གསུངས|བྱས|ཞུས)(་[པབ])?་?)>"r)) ;
+
+#054: Isolating imperative verbs that happen to resemble nouns
+REMOVE (n.count) (0 (v.imp)) (1 ("<(ཅིག་|ཤིག་|ཞིག་)>"r)) (2 ("<(ཅེས|གསུང|ཟེར|གསུངས|བྱས|ཞུས)(་[བཔ])?་?>"r)) ;
+
+#055: Isolating nouns that look like verbs before yod and med
+REMOVE v.xxx (0 (n.count)) (1 ("<(ཡོད|མེད)(་པ)?་?>"r)) ;
+
+#056: Isolating nouns that look like question converbs before the genitive gyi
+REMOVE (cv.ques) (0 (n.count)) (1 ("<གྱི་>")) ;
+
+#057a: Isolating sogs [v.invar] from sogs [d.det]
+REMOVE (d.det) (0 v.xxx LINK 0 ("<སོགས་>")) (1 ("<(ཏེ|སྟེ|ཅིང)་?>"r)) ;
+
+#057b: Isolating sogs [d.det] from sogs [v.invar]
+REMOVE (d.det) (0 v.xxx LINK 0 ("<སོགས་>")) (1 ("<(ཤིང|ཞིང)་?>"r)) (2 shad) ;
+
+#057c: Isolating sogs [d.det] from sogs [v.invar]
+REMOVE (d.det) (-1C v.xxx) (0 v.xxx LINK 0 ("<སོགས་?>"r)) ;
+
+#057d: Isolating sogs [d.det] from sogs [v.invar]
+REMOVE v.xxx (NOT -1 ("<ལ་>")) (0 (d.det) LINK 0 ("<སོགས་?>"r)) ;
+
+#058: Isolating maṅ [d.det] from maṅ [v.invar]
+REMOVE (d.det) (0 ("<མང་>") LINK 0 v.xxx) (NOT 1 ("<དག་?>"r)) ;
+
+#059: Distinguishing dgaḥ from dag
+REMOVE (d.plural) (0 ("<དག>")) (1 ("<འོ>")) (2 shad) ;
+
+#060: Precluding dgaḥ as a noun
+REMOVE (n.count) (0 ("<དགའ་>")) (1 ("<མགུ་>")) ;
+
+#061a: Distinguishing nouns and verbal nouns
+REMOVE (n.count) (NOT -2 (n.rel)) (-1C term) (0 n.v.xxx LINK 0 ("<འགྲོ་བ་?>"r)) ;
+
+#061b: Distinguishing nouns and verbal nouns
+REMOVE n.v.xxx (0 (n.count)) (1C (d.plural) LINK NOT 0 ("<ཀུན་?>"r)) ;
+REMOVE n.v.xxx (0 (n.count)) (1 ("<མང་པོ་?>"r)) ;
+
+#061x: Distinguishing the noun gtibs from the verb gtibs
+REMOVE v.xxx (0 ("<གཏིབས་>")) (1 ("<འོག་?>"r)) ;
+
+#062: Isolating ma [neg] in the phrase skad cig ma gcig &#039;one moment&#039;
+REMOVE (n.count) (-2 ("<སྐད་>")) (-1 ("<ཅིག་>")) (0 ma) (1 ("<གཅིག་>")) ;
+
+#063a: Isolating mi [neg] in certain phrases before dga&#039; ba
+REMOVE (n.count) (-1 ("<(སེམས་|སྙིང་)>"r)) (0 (<"མི་">)) (1 ("<དགའ་བ་?>"r)) ;
+
+#063b: Isolating mi [neg] in certain phrases before dga&#039; ba
+REMOVE (n.count) (-2 ("<འགྱོད་>")) (-1 ("<ཅིང་>")) (0 ("<མི་>")) (1 ("<དགའ་བ་?>"r)) ;
+
+#063c: Isolating mi [neg] in certain phrases before dga&#039; ba
+REMOVE (n.count) (-2 ("<ཤིན་>")) (-1 ("<ཏུ་>")) (0 ("<མི་>")) (1 ("<དགའ་བ་?>"r)) ;
+
+#064: Finding the nouns mi and ma within noun phrases before certain POS tags
+REMOVE (neg) (0 (n.count) LINK 0 mami) (1C (adj) OR d.xxx OR (n.count) OR (n.mass) OR num.xxx OR p.xxx) ;
+REMOVE (neg) (0 (n.count) LINK 0 mami) (1 ("<(ཞིག|འི)་?>"r)) ;
+
+#065: Isolating mi [n.count] and ma [n.count] after the genitive
+SELECT (n.count) (NOT -2C v.xxx) (-1 ("<(འི་|ཀྱི་|གི་|གྱི་)>"r)) (0 ("<(མི་|མ་)>"r)) (NOT 1 ("<རིགས་>")) (NOT 1 n.v.xxx) ;
+
+#066: Isolating mi and ma as nouns before med-pa and yod-pa
+SELECT (n.count) (0 mami) (1 ("<(མེད|མེད་པ|མེད་ས|ཡོད|ཡོད་པ|མིན|མིན་པ|མིན་བ)་?>"r)) ;
+
+#067: Identifying mi/ma [n.count] when conjoined by associative case with an unambiguous noun
+SELECT (n.count) (0 mami) (1 ("<དང་>")) (2C n.xxx) ;
+SELECT (n.count) (-2C n.xxx OR d.xxx OR (num.card) OR (p.pers)) (-1 ("<དང་>")) (0 mami) (NOT 1 n.v.xxx) (NOT 1 ("<(ལྡན|མཐུན|བསྟུན|ཕྲད|མཇལ|འདྲ|བཅས)[པབ]?་?>"r)) ;
+
+#068: Identifying mi [neg] before present and future tense verb forms
+SELECT (neg) (0 mi) (1 pres OR fut) (NOT 1 ("<(གང|དག|རེ|སྟོང|སུམ|སོགས|མང|ལྟ|སུ|དང|དགུ|བཅུ|རིད་པ|བགྲེས་པ|ངན་པ|ཕྲད་ཚད|ལྟོགས་པ|དགའ་བ|ཡོད་པ)་?>"r)) ;
+
+#069: Identifying ma [neg] in the prohibitive
+SELECT (neg) (0 ma) (1C (v.pres)) (2 (cv.imp)) ;
+REMOVE (d.indef) (-2 ma) (-1C (v.pres)) (0 (cv.imp)) ;
+
+#070: Isolating ma [neg] before the past tense and yin
+SELECT (neg) (0 ma LINK 0 (n.count)) (1 cop OR past OR pres) (NOT 1 ("<(ཤི|ལྟ|ཡང|བས)་?>"r)) ;
+
+#071: Isolating ma [neg] in ma śi
+REMOVE (n.count) (-1C (adj) OR d.xxx OR n.xxx OR num.xxx OR p.xxx) (0 ma) (1 ("<ཤི་?>"r)) ;
+REMOVE (n.count) (-2C (adj) OR d.xxx OR n.xxx OR num.xxx OR p.xxx) (-1C (cl.focus)) (0 ma) (1 ("<ཤི་?>"r)) ;
+
+#072: Isolating ma [n.count] and mi [n.count] before case markers
+REMOVE (neg) (0 mami) (1 case.xxx) (NOT 1 v.xxx) ;
+
+#073a: Distinguishing nouns from cases and converbs at the left edge of noun phrases
+REMOVE case.xxx OR cv.xxx (-1C ("<དང་>") OR (case.gen) OR shad.or.g) (0 (n.count) LINK NOT 0 ("<[སར]་?>"r)) ;
+
+#073b: Isolating las &#039;deed&#039;
+SELECT (n.count) (-1 ("<(གི་|གྱི་|ཀྱི་|འི་)>"r)) (0 ("<ལས་>")) ;
+
+#073c: Precluding las &#039;deed&#039;
+REMOVE (n.count) (-1 ("<རྒྱ་མཚོ་>")) (0 ("<ལས་>")) ;
+
+#073d: Precluding las &#039;deed&#039;
+REMOVE KEEPORDER (n.count) (-2 ("<(.+)>"r) LINK 0C v.xxx) (-1 ("<$1[པབ]་>"r) LINK 0C n.v.xxx) (0 ("<ལས་>")) ;
+
+#074a: Isolating źiṅ as the imperfective converb.
+REMOVE (n.count) (-1C v.xxx) (0 ("<ཞིང་?>"r)) (1C v.xxx OR shad) ;
+
+#074b: Isolating śiṅ as the imperfective converb.
+REMOVE (n.count) (-1C v.xxx LINK 0 ("<.+ས་>"r)) (0 ("<ཤིང་?>"r)) (1C v.xxx OR shad) ;
+
+#075: Precluding kyi, gyi, and gi, as the continuitive converb.
+REMOVE (cv.cont) (NOT -1 v.xxx) (0 ("<(གི་|གྱི་|ཀྱི་)>"r)) (NOT 1 verbal) ;
+
+#076a: Identifying when yi is the noun &#039;mind&#039; and not the genitive case suffix
+REMOVE (case.gen) (NOT -1 ("<(\S+་)?(ཀ་|ཀླུ་|ཁ་|ཁྱི་|དགྲ་|འགྲོ་|ང་|ངོ་|ལྔ་|ལྕེ་|ཆུ་|ཇ་|རྗེ་|དེ་|འདི་|མདོ་|པ་|པོ་|བ་|བུ་|བོ་|བློ་|མ་|མི་|མོ་|ཙོ་|རྩ་|རྩེ་|ཟ་|ལ་|ས་|ལྷ་|ལྷོ་|ངྷ་|མཐུ་|ཚེ་|ཕ་|བཞི་|བརྒྱ་|གཡུ་|མེ་|རྒྱ་|རྟ་|བཀའ་|ཆེ་|འབྲུ་|དབུ་|སྒྲ་|སྐུ་|ཞུ་|བྱ་|བཟོ་|ཕྱི་|སྤྱི་|སྔོ་|བྲུ་|རོ་|ཏ་|ཧ་|ཟྭ་|ཉ་|རི་|འཇའ་|སུ་|མདའ་|སྦྲ་|རྡོ་)>"r)) (0 ("<ཡི་>")) ;
+
+#076b: Identifying when yi is the noun &#039;mind&#039; and not the genitive converb suffix
+
+#077: Identifying when ru is the noun &#039;horn&#039; and not the terminative case/converb suffix
+
+#078a: Precluding nas [n.mass] in clause initial de nas
+REMOVE (n.mass) (-2 shad.or.g) (-1 ("<དེ་>")) (0 ("<ནས་>")) (1C (n.count) OR (n.prop)) ;
+
+#078b: Precluding nas [n.mass] after verb stems
+REMOVE (n.mass) (-1C v.xxx) (0 ("<ནས་>")) (1C (n.count) OR (n.prop) OR (p.pers) OR (adv.temp)) ;
+
+#078c: Precluding nas [n.mass] after verb stems
+REMOVE (n.mass) (-1C v.xxx) (0 ("<ནས་>")) (1 ("<ཡང་?>"r)) ;
+
+#078d: Precluding nas [n.mass] after sgo
+REMOVE (n.mass) (-2C (case.gen)) (-1 ("<(སྒོ་|ཞལ་སྔ་)>"r)) (0 ("<ནས་>")) ;
+
+#079a: Precluding raṅ as a verb.
+REMOVE v.xxx (NOT -1 ("<ཡིད?་>"r)) (0 ("<རང་?>"r)) ;
+
+#079b: Isolating raṅ as [p.refl]
+SELECT (p.refl) (-1 ("<(ང་|ངེད་|ཁྱོད་|ཁྱེད་|ཁོ་|ཁོང་)>"r)) (0 ("<རང་>")) ;
+
+#079c: Isolating raṅ as [d.det]
+SELECT (d.det) (-1C (adj)) (0 ("<རང་>")) (1 ("<ཞིག་>")) ;
+
+#079d: Isolating raṅ as [d.det]
+SELECT (d.det) (-2C (n.count)) (-1C (adj)) (0 ("<རང་>")) (1 ("<མི་>")) (2 ("<འདུག་?>"r)) ;
+
+#080a: Distinguishing de [d.dem] from de [cv.sem]
+REMOVE (cv.sem) (-1C (adj) OR d.xxx OR n.xxx OR p.xxx) (0 (d.dem) LINK 0 ("<དེ་?>"r)) (NOT 1 shad OR ("<དེ་?>"r)) ;
+
+#080b: Distinguishing de [d.dem] from de [cv.sem] at the end of a noun phrase
+SELECT case.xxx (-1 ("<དེ>")) (0 ("<[སར]་?>"r)) ;
+REMOVE (cv.sem) (0 ("<དེ>")) (1 case.xxx LINK 0 ("<[སར]་?>"r)) ;
+
+#080c: Distinguishing de [d.dem] from de [cv.sem] at the end of a noun phrase
+REMOVE (cv.sem) (0 ("<དེ་>")) (1 ("<དག་?>"r)) ;
+
+#080d: Distinguishing de [d.dem] from de [cv.sem] after verb stems
+REMOVE (d.dem) (-1C v.xxx) (0 (cv.sem)) ;
+
+#081a: Precluding dag [cl.focus]
+REMOVE (cl.focus) (-1C (d.dem)) (0 ("<དག་>")) ;
+
+#081b: Precluding dag [cl.focus]
+REMOVE (cl.focus) (0 ("<དག་>")) (1 ("<གིས་?>"r)) ;
+
+#081c: Distinguishing dag [d.plural] and dag [v.xxx]
+REMOVE (d.plural) (1 ("<ཅིང་>")) ;
+
+#081d: Distinguishing dag [d.plural] and dag [v.xxx]
+REMOVE v.xxx (-1 ("<(འདི་|དེ་)>"r)) (0 ("<དག་>")) (1 ("<(ཀུན་|ཐམས་ཅད་)>"r)) ;
+
+#081e: Distinguishing dag [d.plural] and dag [v.xxx]
+REMOVE v.xxx (-1 ("<(འདི་|དེ་)>"r)) (0 ("<དག་>")) (1 ("<(གི་|དང་)>"r)) (2C (n.count)) ;
+
+#082a: Isolating ambiguous nouns in clause initial position
+REMOVE v.xxx (NOT -2 (cv.impf)) (-1 shad.or.g) (0 (n.count) LINK NOT 0 ("<(ཟེར་|དྲན་)>"r)) (NOT 1 (adv.proclausal) OR (cl.focus) OR (cv.cont) OR (cv.ela) OR (cv.impf) OR (cv.sem) OR (cv.term) OR n.v.xxx OR (neg) OR v.xxx) ;
+REMOVE v.xxx (NEGATE -2 ("<ལུང་>") LINK 1 ("<༎>") LINK 1 ("<བསྟན་>")) (-1 shad.or.g) (0 (n.count) LINK NOT 0 ("<(ཟེར་|དྲན་)>"r)) (NOT 1 (adv.proclausal) OR (cl.focus) OR (cv.cont) OR (cv.ela) OR (cv.impf) OR (cv.sem) OR (cv.term) OR n.v.xxx OR (neg) OR v.xxx) ;
+
+#082b: Isolating pronouns in clause initial position
+REMOVE cv.xxx (-1 shad.or.g) (0 p.xxx) ;
+
+#083a: Distinguishing cig, źig, śig [cv.imp] from cig, źig, śig [d.indef] after the imperative and the prohibitive
+REMOVE (d.indef) (-1C (v.imp)) (0 (cv.imp)) ;
+REMOVE (d.indef) (-2 ma) (-1 (v.pres)) (0 (cv.imp)) ;
+
+#083b: Distinguishing cig, źig, śig [cv.imp] from cig, źig, śig [d.indef] elsewhere
+REMOVE (cv.imp) (NOT -1 (v.imp) OR (v.past) OR (v.pres)) (0 (d.indef)) ;
+
+#083c: Distinguishing cig, źig, śig [cv.imp] from cig, źig, śig [d.indef] after the imperative and the prohibitive
+REMOVE (d.indef) (-2 ma) (-1 (v.past) OR (v.pres)) (0 (cv.imp)) (1C (cl.quot) OR (punc)) ;
+
+#083d: Distinguishing cig, źig, śig [cv.imp] from cig, źig, śig [d.indef] after the imperative and the prohibitive
+REMOVE (d.indef) (-1 (v.imp)) (0 (cv.imp)) (1C (cl.quot) OR (punc)) ;
+
+#084: Precluding la as a noun before certain verbs
+REMOVE (n.count) OR (skt) (0 ("<ལ་>")) (1 verbal LINK 0 ("<(འབེབས|ཕཔ|བབ|བབས|ཐུག|བརྟེན|ཕུལ|འབུལ|འཇུག)(་(པ|བ|ཚུལ|རྒྱུ|མཁན|མི|བྱ))?་?>"r)) ;
+
+#085: Precluding la as a noun in clause final position
+REMOVE (n.count) (-1C verbal) (0 ("<ལ་?>"r)) (1 shad) ;
+
+#086a: Precluding nas as a noun in clause final position
+REMOVE (n.mass) (-1C v.xxx) (0 ("<ནས་?>"r)) (1 shad) ;
+
+#086b: Isolating nas [case.ela] in the phrase yaṅ nas yaṅ
+SELECT (case.ela) (-1 ("<ཡང་>")) (0 ("<ནས་>")) (1 ("<ཡང་?>"r)) ;
+
+#087a: Isolating gyis [v.imp] from gyis [case.agn]/[cv.agn]
+REMOVE v.xxx - (v.imp) (0 (v.imp) LINK NOT 0 ("<.+[ནརལམ]་>"r)) (1 ("<གྱིས་?>"r)) (NOT 2 ("<(དོགས|ཀྱང)་?>"r)) ;
+REMOVE agn (-1 (v.imp)) (NOT -1 ("<.+[ནརལམ]་>"r)) (0 ("<གྱིས་?>"r)) (NOT 1 ("<(དོགས|ཀྱང)་?>"r)) ;
+
+#087b: Isolating gyis [v.imp] from gyis [case.agn]/[cv.agn]
+SELECT (v.imp) (0 ("<གྱིས་>")) (1 ("<ཤིག་>")) (2 shad OR ("<(ཟེར་?|གསུངས?་?|ཅེས་?)>"r)) ;
+
+#087c: Isolating gyis [v.imp] from gyis [case.agn]/[cv.agn]
+SELECT (v.imp) (0 ("<གྱིས་>")) (1 ("<ལ་>")) (2C (v.imp)) ;
+SELECT (v.imp) (0 ("<གྱིས་>")) (1 ("<ལ་>")) (2 (v.imp)) (3 cig) ;
+
+#088: Precluding gyi as a [v.imp]
+REMOVE (v.imp) (-1C (n.count) OR (n.mass) OR (num.card)) (-1 ("<.+[ནམརལ]་>"r)) (0 ("<གྱི་>")) (1C (n.count) OR (n.mass)) ;
+
+#089a: Isolating su [p.interrog] from su [case.term]/[cv.term]
+REMOVE term (NOT -1 ("<.+ས་>"r)) (0 ("<སུ་?>"r)) ;
+
+#089b: Isolating su [cv.term]
+SELECT (cv.term) (-1 ("<.+ས་>"r) LINK 0C v.xxx) (0 ("<སུ་>")) (1 ("<གསོལ་?>"r)) ;
+
+#089c: Locating su as a case marker with certain verbs
+SELECT (case.term) (-1C (n.count) LINK 0 ("<.+ས་>"r)) (0 ("<སུ་>")) (1C verbal LINK 0 ("<(སོང|འོངས|གཤེགས|ཕྱིན|བྱོན|འགྲོ|བྱུང|འབྱུང|གྱུར|འགྱུར)(་པ|བ)?་?>"r)) ;
+
+#089d: Isolating su [p.interrog] (and źig [d.indef])
+SELECT (p.interrog) (0 ("<སུ་>")) (1 ("<ཞིག་>") LINK 0 (d.indef)) ;
+SELECT (d.indef) (-1 ("<སུ་>") LINK 0 (p.interrog)) (0 ("<ཞིག་>")) ;
+
+#089x: Isolating na as [cv.loc] in the pattern [v.xxx] tsam na
+REMOVE (case.loc) (-2 v.xxx LINK NOT 0 n.xxx) (-1 ("<ཙམ་>")) (0 ("<ན་?>"r)) ;
+
+#090a: Isolating case markers after nominals other than verbal nouns, [d.dem] and [d.indef]
+REMOVE cv.xxx (-1 ("<(དེ་|ཅིག་|ཞིག་)>"r)) (0 case.xxx) ;
+REMOVE cv.xxx (-1C (adj) OR (adv.proclausal) OR d.xxx OR n.xxx OR num.xxx OR p.xxx) (0 case.xxx) ;
+
+#090b: Isolating case markers after śig
+REMOVE cv.xxx (-1 ("<ཤིག་>")) (NOT 0 ("<(ལ|དང)་?>"r)) (0 case.xxx) ;
+
+#090c: Isolating case markers after verbal nouns
+REMOVE cv.xxx (-1C n.v.xxx) (0 case.xxx - (case.loc)) ;
+
+#091a: Isolating ambiguous nouns after the genitive case
+REMOVE v.xxx (-1C (case.gen)) (0 (n.count)) (NOT 0 ("<རིགས་?>"r)) (NOT 1 (cv.cont) OR (cv.impf) OR (cv.sem)) ;
+
+#091b: Isolating case markers after newly identified nominals
+REMOVE cv.xxx (-1C (n.count) OR (n.mass) OR (n.rel) OR num.xxx OR p.xxx) (0 case.xxx) ;
+
+#092: Precluding gis as [case.gen] when not followed by a noun phrase
+REMOVE (case.gen) (0 ("<གིས་>")) (NOT 1 n.xxx) ;
+
+#093: Isolating converbs after verbs
+REMOVE case.xxx (-1C v.xxx) (0 cv.xxx LINK NOT 0 (cv.gen)) ;
+
+#094: Precluding converbs after multi-syllable words
+REMOVE cv.xxx (-1 ("<.+་.+>"r)) (0 case.xxx) (NOT 0 ("<ན་?>"r)) ;
+
+#095: Precluding the imperative converbs after multi-syllable words
+REMOVE (cv.imp) (-1 ("<.+་.+>"r)) (0 (d.indef)) ;
+
+#096: Distinguishing nouns and verbal nouns
+REMOVE (n.count) (-1C (case.term)) (0 n.v.xxx) ;
+
+#097a: Specifying la as a case marker with certain verbs
+REMOVE (n.count) (-1C d.xxx OR n.xxx OR num.xxx OR (p.pers)) (0 ("<ལ་>")) (1 verbal LINK 0 ("<(བལྟས|བལྟ|ལྟོས|གཟིགས|གསོལ|མཆོད|སྦྱིན|བྱིན|སྙོམས|འདུད|འཕུར|འགྲོ|འབྱོན|བྱོན|གནང|རེག|ཕན)(?:་[པབ])?་?>"r)) ;
+REMOVE (n.count) (-1C d.xxx OR n.xxx OR num.xxx OR (p.pers)) (0 ("<ལ་>")) (1C (neg)) (2 verbal LINK 0 ("<(བལྟས|བལྟ|ལྟོས|གཟིགས|གསོལ|མཆོད|སྦྱིན|བྱིན|སྙོམས|འདུད|འཕུར|འགྲོ|འབྱོན|བྱོན|གནང|རེག|ཕན)(?:་[པབ])?་?>"r)) ;
+
+#097b: Specifying la as a case marker in the phrase la sogs-pa
+SELECT (case.all) (0 ("<ལ་>")) (1 ("<སོགས་པ་?>"r)) ;
+
+#098a: Specifying daṅ as a case marker with certain verbs
+REMOVE (cv.ass) (0 (case.ass)) (1C verbal LINK 0 ("<(བཅས|མཐུན|ལྡན|མཚུངས)(་པ)?་?>"r)) ;
+
+#098a: Specifying daṅ as a case marker with certain verbs
+REMOVE (cv.ass) (0 (case.ass)) (1C verbal LINK 0 ("<(བཅས|མཐུན|ལྡན|མཚུངས|སྦྱར)(་པ)?་?>"r)) ;
+
+#098b: Locating nouns before daṅ when specified as a case marker with certain verbs
+REMOVE v.xxx (0 n.xxx) (1C (case.ass)) ;
+
+#099a: Specifying daṅ as a case marker after [cl.quot]
+SELECT (case.ass) (-1C (cl.quot)) (0 ("<དང་>")) ;
+
+#099b: Specifying daṅ as a case marker after certain zero nominalized verbs
+SELECT (case.ass) (-2 ("<ང་>")) (-1 ("<ཆེ་>")) (0 ("<དང་>")) (1 ("<ང་>")) (2 ("< མཁས་>")) ;
+
+#099c: Specifying daṅ as a case marker after certain zero nominalized verbs
+SELECT (case.ass) (-1 ("<གཟུང་>")) (0 ("<དང་>")) (1 ("<འཛིན་པ་?>"r)) ;
+
+#101: Locating las as a case marker with certain verbs
+SELECT (case.abl) (-1C (n.count)) (0 ("<ལས་>")) (1C verbal LINK 0 ("<(བབས(་པ)?|བྱུང(་བ)?|འབྱུང(་བ)?|ལངས(་པ)?|འཕྲོས(་པ)?|འདས(་པ)?|ཐར(་བ)?)་?>"r)) ;
+
+#102a: Isolating kha [n.count] &#039;mouth&#039;
+REMOVE (n.rel) (-2 ("<ཆུ་སྲིན་>")) (-1 ("<གྱི་>")) (0 ("<ཁ>")) (1 ("<ར་?>"r)) ;
+REMOVE (n.rel) (-3 ("<ཟ་>")) (-2 ("<འདོད་པ>")) (-1 ("<འི་>")) (0 ("<ཁ>")) (1 ("<ར་?>"r)) ;
+
+#102b: Isolating kha [n.count] &#039;mouth&#039;
+REMOVE (n.rel) (0 ("<ཁ>")) (1 ("<ས་>")) (2 ("<བླངས(་པ)?་?>"r)) ;
+
+#102c: Isolating kha [n.count] &#039;mouth&#039;
+REMOVE (n.rel) (0 ("<ཁ་>")) (1 ("<ལ་>")) (2 ("<ཉན(་པ)?་?>"r)) ;
+
+#102d: Isolating kha [n.count] &#039;mouth&#039;
+REMOVE (n.rel) (0 ("<ཁ་>")) (1 ("<ལ་>")) (2 ("<གཏད(་པ)?་?>"r)) ;
+
+#102e: Isolating kha [p.indef] &#039;someone&#039;
+SELECT (p.indef) (-1 ("<.*[ག།༔༎༏༐༑]>"r)) (0 ("<ཁ་>")) (1 ("<ཅིག་>")) (2 ("<གིས་>")) ;
+
+#102f: Precluding kha [p.indef] &#039;someone&#039;
+REMOVE (p.indef) (0 ("<ཁ་?>"r)) (NOT 1 ("<(ཅིག|ཤས)་?>"r)) ;
+
+#102g: Precluding kha [d.det]
+REMOVE (d.det) (-1 shad.or.g) (0 ("<ཁ་?>"r)) ;
+
+#103: Precluding kho [d.emph]
+REMOVE (d.emph) (-1 shad.or.g) (0 ("<ཁོ་>")) ;
+
+#104a: Distinguishing tshe [n.rel] from tshe [n.count]
+SELECT (n.count) (-2 ("<བདག་>")) (-1 ("<གི་>")) (0 ("<ཚེ་?>"r)) ;
+
+#104b: Distinguishing tshe [n.rel] from tshe [n.count]
+SELECT (n.rel) (-2C n.v.xxx) (-1C (case.gen)) (0 ("<ཚེ་>")) ;
+
+#104c: Distinguishing tshe [n.rel] from tshe [n.count]
+SELECT (n.rel) (-1C v.xxx LINK 0 tshegful) (0 ("<ཚེ་>")) ;
+
+#104d: Distinguishing tshe [n.rel] from tshe [n.count]
+REMOVE (n.rel) (NOT -2 ("<དེ>")) (NOT -1 ("<འི་>")) (0 (n.count)) (1C (d.dem)) (NOT 2C (case.gen) OR (n.rel)) ;
+
+#104e: Distinguishing tshe [n.rel] from tshe [n.count]
+SELECT (n.count) (0 ("<ཚེ་>")) (1 ("<འཕོས(་པ)?་?>"r)) ;
+
+#104f: Distinguishing tshe [n.rel] from tshe [n.count]
+SELECT (n.count) (0 ("<ཚེ་>")) (1 ("<དང་>")) (2 ("<ལྡན(་པ)?་?>"r)) ;
+
+#104x: Distinguishing dus [n.rel] from dus [n.count]
+SELECT (n.count) (0 ("<དུས་>")) (1 ("<གསུམ་>")) ;
+
+#105: Isolating relator nouns after a genitive and before a spatial case
+REMOVE (n.count) (-1 (case.gen)) (0 (n.rel) LINK NOT 0 ("<སྐད་>")) (1C (case.loc) OR (case.term)) (NEGATE 0 ("<ནང་>") LINK 1 ("<དུ་>") LINK 1 ("<གནས་>")) (NEGATE -3 ("<རྒན་མོ་>") LINK 1 ("<གཅིག་>") LINK 1 ("<གི་>") LINK 1 ("<ནང་>")) (NEGATE -2 ("<རྒན་མོ>") LINK 1 ("<འི་>") LINK 1 ("<ནང་>")) ;
+
+#106a: Isolating yoṅs su as [d.plural] in certain fixed Sanskritisms.
+SELECT (d.plural) (0 ("<ཡོངས་>")) (1 ("<སུ་>")) (2 ("<བཟུང་>")) ;
+SELECT (d.plural) (0 ("<ཡོངས་>")) (1 ("<སུ་>")) (2 ("<མ་>")) (3 ("<དག(་པ)?་?>"r)) ;
+SELECT (d.plural) (0 ("<ཡོངས་>")) (1 ("<སུ་>")) (2 ("<མི་>")) (3 ("<(ཉམས|གཏོང)(་[པབ])?་?>"r)) ;
+SELECT (d.plural) (0 ("<ཡོངས་>")) (1 ("<སུ་>")) (2 ("<(ཤེས|རྫོགས|བྱང|བསྡུས|གྲགས|ཚོལ|སྦྱོང|བརྗོད|འཛིན|གདུང)(་[པབ])?་?>"r)) ;
+
+#106b: Isolating rje su as [n.rel] in certain fixed Sanskritisms.
+SELECT (n.rel) (0 ("<རྗེས་>")) (1 ("<སུ་>")) (2 ("<ཡི་>")) (3 ("<(རང(་བ)?|རངས)་?>"r)) ;
+SELECT (n.rel) (0 ("<རྗེས་>")) (1 ("<སུ་>")) (2 ("<(འཛིན|རྟོགས|མཐུན|བསྟན|ཆགས)(་པ)?་?>"r)) ;
+
+#106c: Isolating khoṅ du as [n.rel] in the phrasal verb khoṅ du chud
+SELECT (n.rel) (0 ("<ཁོང་>")) (1 ("<དུ་>")) (2 ("<ཆུད(་པ)?་?>"r)) ;
+
+#107: Distinguishing nouns from relator nouns in clause initial position
+REMOVE (n.rel) (-1 shad.or.g) (0 (n.count)) ;
+
+#108: Isolating raṅ as a reflexive pronoun
+REMOVE (d.det) (-1C (p.pers)) (0 ("<རང་>")) ;
+
+#109a: Identifying unknown words as names
+SUBSTITUTE (n.invar) (n.prop) TARGET (n.invar) (1C (cl.quot) LINK 0 ("<ཞེས་>")) (2C (n.v.fut) LINK 0 ("<བྱ་བ་?>"r)) ;
+
+#109b: Identifying unknown words as names
+SUBSTITUTE (n.invar) (n.prop) TARGET (n.invar) (1 ("<(མིང་|མཚན་)>"r)) (2C (case.term)) (3 ("<བཏགས>")) (4 shad) ;
+
+#109c: Identifying unknown words as names
+SUBSTITUTE (n.invar) (n.prop) TARGET (n.invar) (1 ("<ཞེས་སུ་གྲགས་>")) ;
+
+#110a: Isolating auxiliary and nominalized auxiliary verbs
+REMOVE verbal - aux (-1C v.xxx) (0 (v.aux)) ;
+REMOVE verbal - aux (-2C v.xxx) (-1 (neg)) (0 (v.aux)) ;
+
+#110b: Precluding auxiliary and nominalized auxiliary verbs
+REMOVE aux (NOT -1 (cl.focus) OR (neg) OR v.xxx) ;
+
+#111a: Finding the imperative before [cv.imp]
+REMOVE v.xxx - (v.imp) (NOT -1 ma) (0 (v.imp)) (1 cig) ;
+
+#111b: Precluding the interpretation of źig as [d.indef] after an imperative
+REMOVE (d.indef) (-1C (v.imp)) (0 ("<ཞིག་?>"r)) ;
+
+#112: Finding the prohibitive (present negated with ma) before [cv.imp]
+SELECT (v.pres) (-1 ma) (1 cig) ;
+
+#113a: Prohibiting the imperative in non-finite and finite but explicitly non-imperative contexts
+REMOVE (v.imp) (0 v.xxx - (v.imp)) (1 ("<(ན|ཀྱང|ཡང|ནས|ཀྱི)་>"r) OR (cv.cont) OR (cv.ela) OR (cv.fin) OR (cv.impf) OR (cv.loc) OR (cv.ques) OR (cv.sem) OR (cv.term)) ;
+
+#113b: Prohibiting the imperative before [cv.term]/[case.term]
+REMOVE (v.imp) (1 term) ;
+
+#113c: Precluding the imperative interpretation of źig [d.indef]
+REMOVE (v.imp) OR (v.past) (-1C (n.count)) (0 ("<ཞིག་>")) (1C case.xxx) ;
+
+#113d: Prohibiting the imperative before [v.aux]
+REMOVE (v.imp) (0 v.xxx - (v.imp)) (1C (neg)) (2 ("<(དགོས་|ནུས་|མོད་|དགོས|འདོད་|ཤེས་|སྲིད་|རན་|གྲགས་|ཐང་|ཕོད|དཀའ་)>"r)) ;
+
+#113e: Prohibiting the imperative in certain serial verb constructions
+REMOVE (v.imp) (0 ("<\S+་>"r) LINK 0 v.xxx - (v.imp)) (1C verbal LINK 0 ("<(བྱུང|སོང|འདུག|གྱུར).*>"r)) ;
+
+#113f: Prohibiting the imperative interpretation of soṅ when it serves as a past auxilliary
+REMOVE (v.imp) (-1C v.xxx LINK 0 (v.past)) (0 ("<སོང་>") LINK 0 (v.past)) ;
+
+#113g: Prohibiting the imperative before tshe [n.rel] and dus [n.rel]
+REMOVE (v.imp) (0C v.xxx) (1C (n.rel) LINK 0 ("<(ཚེ|དུས)་?>"r)) ;
+
+#113h: Prohibiting the imperative after [cv.ela]
+REMOVE (v.imp) (-2C v.xxx) (-1 ("<ནས་>")) (0 v.xxx - (v.imp)) (1C (punc)) ;
+
+#113i: Prohibiting the imperative after [cv.sem]
+REMOVE (v.imp) (-2C v.xxx) (-1C (cv.sem)) (0 v.xxx - (v.imp)) (1C (punc)) ;
+
+#114: Finding the imperative before śog [v.imp]
+SELECT (v.imp) (0C v.xxx) (1C (v.imp) LINK 0 ("<ཤོག་?>"r)) ;
+
+#115: The prohibition of the future before the elative converb nas
+REMOVE (v.fut) (0 v.xxx - (v.fut)) (1 ("<ནས་?>"r)) ;
+
+#116: The prohibition of the past in the indirect infinite construction
+REMOVE (v.past) (NOT -1 ("<མ་>")) (0 v.xxx LINK NOT 0 (v.past)) (1 (cv.term)) (2 verbal) ;
+
+#117: Isolating verb stems and verbal nouns after negation with ma
+REMOVE (*) - aux.cop.past (-1C (neg) LINK 0 ma) (0 aux.cop.past) ;
+
+#118: Isolating the present verb stem in the prohibitive construction
+REMOVE (v.fut) OR (v.imp) (-1C (neg) LINK 0 ma) (0 (v.pres) - (v.past) LINK 0 (v.fut) OR (v.imp)) (1C (cl.quot) OR (punc) OR ("<(ཟེར|གསུང|གསུངས)་?>"r)) ;
+
+#119: Precluding the past after negation with mi
+REMOVE (*) - aux.fut.pres (-1C (neg) LINK 0 mi) ;
+
+#120: The da-drag before kyaṅ, ciṅ, to, tu, or tam
+REMOVE (v.fut) (0 v.xxx - (v.fut) LINK 0 nlr) (1 ("<(ཀྱང|ཅིང|ཏོ|ཏུ|ཏམ)་?>"r)) ;
+
+#121: The absence of the da-drag before the final converb
+REMOVE KEEPORDER (v.past) (0 v.xxx - (v.past) LINK 0 nlr) (1 (VSTR:"<$1ོ་?>"r)) ;
+
+#122: The absence of the da-drag before źiṅ
+REMOVE (v.past) (0 v.xxx - (v.past) LINK 0 nlr) (1 ("<ཞིང་>")) ;
+
+#123: The absence of the da-drag before [cv.ques]
+REMOVE KEEPORDER (v.past) (0 v.xxx - (v.past) LINK 0 nlr) (1 (cv.ques) LINK 0 (VSTR:"<$1མ་?>"r)) ;
+
+#124: The absence of the da-drag before [cv.term]
+REMOVE (v.past) (0 v.xxx - (v.past) LINK 0 nlr) (1 ("<དུ་?>"r)) ;
+
+#125: The absence of the da-drag before yaṅ [cl.focus]
+REMOVE (v.past) (0 v.xxx - (v.past) LINK 0 nlr) (1 ("<ཡང་?>"r)) ;
+
+#126: Removing the future for verbal nouns ending in -pa
+REMOVE (n.v.fut) (0 n.v.xxx - (n.v.fut) LINK 0 nlr.pa) ;
+
+#127: Removing the past for verbal nouns ending in -ba
+REMOVE (n.v.past) (0 n.v.xxx - (n.v.past) LINK 0 nlr.ba) ;
+
+#128: The creation of the tags [v.invar] and [n.v.invar]
+APPEND ("$1"v v.invar) TARGET ("<(.*)>"r) (0 (v.fut) LINK 0 (v.past) LINK 0 (v.pres)) ;
+APPEND ("$1"v n.v.invar) TARGET ("<(.*)>"r) (0 (n.v.fut) LINK 0 (n.v.past) LINK 0 (n.v.pres)) ;
+REMOVE fut OR past OR pres (0 invar) ;
+
+#129: The creation of the tags [v.fut.v.past] and [n.v.fut.n.v.past]
+APPEND ("$1"v v.fut.v.past) TARGET ("<(.*)>"r) (0 (v.fut) LINK 0 (v.past)) ;
+APPEND ("$1"v n.v.fut.n.v.past) TARGET ("<(.*)>"r) (0 (n.v.fut) LINK 0 (n.v.past)) ;
+REMOVE fut OR past (0 fut.past) ;
+
+#130: The creation of the tags [v.fut.v.pres] and [n.v.fut.n.v.pres]
+APPEND ("$1"v v.fut.v.pres) TARGET ("<(.*)>"r) (0 (v.fut) LINK 0 (v.pres)) ;
+APPEND ("$1"v n.v.fut.n.v.pres) TARGET ("<(.*)>"r) (0 (n.v.fut) LINK 0 (n.v.pres)) ;
+REMOVE fut OR pres (0 fut.pres) ;
+
+#131: The creation of the tags [v.past.v.pres] and [n.v.past.n.v.pres]
+APPEND ("$1"v v.past.v.pres) TARGET ("<(.*)>"r) (0 (v.past) LINK 0 (v.pres)) ;
+APPEND ("$1"v n.v.past.n.v.pres) TARGET ("<(.*)>"r) (0 (n.v.past) LINK 0 (n.v.pres)) ;
+REMOVE past OR pres (0 past.pres) ;
+
+#132: [v.invar] > [v.fut.v.pres] ~ [v.past]
+APPEND ("$1"v v.fut.v.pres) TARGET ("<(.*)>"r) (0 v.fut.v.pres_v.past) (0 (v.invar)) ;
+APPEND ("$1"v v.past) TARGET ("<(.*)>"r) (0 v.fut.v.pres_v.past) (0 (v.invar)) ;
+REMOVE (v.invar) (0 v.fut.v.pres_v.past) ;
+
+#133: [v.invar] > [v.fut.v.past] ~ [v.fut]
+APPEND ("$1"v v.fut) TARGET ("<(.*)>"r) (0 v.fut_v.fut.v.past) (0 (v.invar)) ;
+APPEND ("$1"v v.fut.v.past) TARGET ("<(.*)>"r) (0 v.fut_v.fut.v.past) (0 (v.invar)) ;
+REMOVE (v.invar) (0 v.fut_v.fut.v.past) ;
+
+#134: [v.invar] > [v.invar] ~ [v.pres]
+APPEND ("$1"v v.pres) TARGET ("<(.*)>"r) (0 v.invar_v.pres) (0 (v.invar)) ;
+
+#135: [v.invar] > [v.invar] ~ [v.past]
+APPEND ("$1"v v.past) TARGET ("<(.*)>"r) (0 v.invar_v.past) (0 (v.invar)) ;
+
+#135x: Specifying bcas as [v.invar]
+REMOVE (v.past) (-1 ("<དང་>")) (0 ("<བཅས་?>"r) LINK 0 (v.invar)) ;
+
+#136: [v.invar] > [v.fut.v.pres] ~ [v.invar]
+APPEND ("$1"v v.fut.v.pres) TARGET ("<(.*)>"r) (0 v.invar_v.fut.v.pres) (0 (v.invar)) ;
+
+#137: mi [v.invar] > [v.invar] ~ [v.fut.v.pres]
+APPEND ("$1"v v.fut.v.pres) TARGET ("<(.*)>"r) (-1 ("<མི་>") LINK 0 (n.count) LINK 0 (neg)) (0 (v.invar)) ;
+
+#138: [v.past.v.pres] > [v.past] ~ [v.past.v.pres]
+APPEND ("$1"v v.past) TARGET ("<(.*)>"r) (0 v.past.v.pres_v.past) (0 (v.past.v.pres)) ;
+
+#138x: [v.past.v.pres] > [v.pres] ~ [v.past.v.pres]
+APPEND ("$1"v v.pres) TARGET ("<(.*)>"r) (0 v.past.v.pres_v.pres) (0 (v.past.v.pres)) ;
+
+#139: [v.fut.v.past] > [v.fut.v.past] ~ [v.past]
+APPEND ("$1"v v.past) TARGET ("<(.*)>"r) (0 v.fut.v.past_v.past) (0 (v.fut.v.past)) ;
+
+#140: [v.fut.v.pres] > [v.fut.v.pres] ~ [v.pres]
+APPEND ("$1"v v.pres) TARGET ("<(.*)>"r) (0 v.fut.v.pres_v.pres) (0 (v.fut.v.pres)) ;
+
+#141: [v.fut.v.pres] > [v.fut] ~ [v.fut.v.pres]
+APPEND ("$1"v v.fut) TARGET ("<(.*)>"r) (0 v.fut.v.pres_v.fut) (0 (v.fut.v.pres)) ;
+
+#142: [n.v.invar] > [n.v.fut.n.v.pres] ~ [n.v.past]
+APPEND ("$1"v n.v.fut.n.v.pres) TARGET ("<(.*)>"r) (0 n.v.fut.n.v.pres_n.v.past) (0 (n.v.invar)) ;
+APPEND ("$1"v n.v.past) TARGET ("<(.*)>"r) (0 n.v.fut.n.v.pres_n.v.past) (0 (n.v.invar)) ;
+REMOVE (n.v.invar) (0 n.v.fut.n.v.pres_n.v.past) ;
+
+#143: [n.v.invar] > [n.v.invar] ~ [n.v.pres]
+APPEND ("$1"v n.v.pres) TARGET ("<(.*)>"r) (0 n.v.invar_n.v.pres) (0 (n.v.invar)) ;
+
+#144: [n.v.invar] > [n.v.fut] ~ [n.v.invar]
+APPEND ("$1"v n.v.fut) TARGET ("<(.*)>"r) (0 n.v.invar_n.v.fut) (0 (n.v.invar)) ;
+
+#145: [n.v.invar] > [n.v.invar] ~ [n.v.past]
+APPEND ("$1"v n.v.past) TARGET ("<(.*)>"r) (0 n.v.invar_n.v.past) (0 (n.v.invar)) ;
+
+#146: Isolating ches [v.invar]
+REMOVE past (-1 (n.count) LINK 0 ("<ཡིད་>")) (0 invar LINK 0 ("<ཆེས(་པ)?་?>"r)) ;
+
+#147: [n.v.fut.n.v.pres] > [n.v.fut.n.v.pres] ~ [n.v.pres]
+APPEND ("$1"v n.v.pres) TARGET ("<(.*)>"r) (0 n.v.fut.n.v.pres_n.v.pres) (0 (n.v.fut.n.v.pres)) ;
+
+#148a: [n.v.past.n.v.pres] > [n.v.past.n.v.pres] ~ [n.v.pres]
+APPEND ("$1"v n.v.pres) TARGET ("<(.*)>"r) (0 n.v.past.n.v.pres_n.v.pres) (0 (n.v.past.n.v.pres)) ;
+
+#148b: Specifying rtog-pa [n.v.past.n.v.pres]
+SELECT (n.v.past.n.v.pres) (-2 ("<སོ་སོ>")) (-1 ("<ར་>")) (0 ("<རྟོག་པ>")) (1 ("<འི་>")) (2 ("<(ཤེས་རབ་|ཡེ་ཤེས་)>"r)) ;
+
+#149: [n.v.past.n.v.pres] > [n.v.past] ~ [n.v.past.n.v.pres]
+APPEND ("$1"v n.v.past) TARGET ("<(.*)>"r) (0 n.v.past_n.v.pres) (0 (n.v.past.n.v.pres)) ;
+APPEND ("$1"v n.v.pres) TARGET ("<(.*)>"r) (0 n.v.past_n.v.pres) (0 (n.v.past.n.v.pres)) ;
+REMOVE (n.v.past.n.v.pres) (0 n.v.past_n.v.pres) ;
+
+#150: mi [n.v.invar] > [n.v.invar] ~ [n.v.fut.n.v.pres]
+APPEND ("$1"v n.v.fut.n.v.pres) TARGET ("<(.*)>"r) (-1 ("<མི་>") LINK 0 (n.count) LINK 0 (neg)) (0 (n.v.invar)) ;
+
+#151: Precluding la as a noun between two imperatives
+REMOVE (n.count) (-1C (v.imp)) (0 ("<ལ་>")) (1C (v.imp)) ;
+
+#152: Finding numbers
+SELECT (num.card) (-2 (num.card)) (NOT -2 ("<རེ་>")) (-1 (num.card)) (NOT -1 ("<རེ་>")) (NOT 0 ("<རེ་>")) ;
+SELECT (num.card) (-1 (num.card)) (NOT -1 ("<རེ་>")) (NOT 0 ("<རེ་>")) (1 (num.card)) (NOT 1 ("<རེ་>")) ;
+SELECT (num.card) (NOT 0 ("<རེ་>")) (1 (num.card)) (NOT 1 ("<རེ་>")) (2 (num.card)) (NOT 2 ("<རེ་>")) ;
+
+#153a: Distinguishing gcig-pa [adj] from gcig-pa [num.ord]
+REMOVE (adj) (-1C (num.card)) (0 (num.ord) LINK 0 ("<གཅིག་པ་?>"r)) ;
+REMOVE (adj) (-2C (num.card)) (-1 (num.card)) (0 (num.ord) LINK 0 ("<གཅིག་པ་?>"r)) ;
+
+#153b: Distinguishing gcig-pa [adj] from gcig-pa [num.ord]
+REMOVE (num.ord) (NOT -1 (num.card)) (0 (adj) LINK 0 ("<གཅིག་པ་?>"r)) ;
+
+#153c: Distinguishing gcig-pa [adj] from gcig-pa [num.ord]
+SELECT (num.card) (0 ("<བཅུ་>")) (1 ("<གཅིག་པ་?>"r)) ;
+SELECT (num.ord) (-1 ("<བཅུ་>")) (0 ("<གཅིག་པ་?>"r)) ;
+
+#154a: Distinguishing mass nouns and adjectives
+REMOVE (n.mass) (-2 shad.or.g) (-1C (n.count) OR (n.mass) OR (n.prop)) (0 (adj)) ;
+
+#154b: Distinguishing mass nouns and adjectives
+REMOVE (adj) (0 (n.mass) LINK 0 ("<རིན་པོ་ཆེ་>")) (1 ("<སྣ་>")) (2C (num.card)) ;
+
+#155a: Finding count nouns
+REMOVE (n.mass) (0 (n.count)) (1 ("<(རྣམས|ཆེན་པོ|ཚོ)་?>"r) OR (d.indef) OR num.xxx) (NEGATE 1 ("<ཆར་>") LINK 0 num.xxx) ;
+REMOVE (n.mass) (0 (n.count)) (1C (adj) OR (d.dem)) (2 ("<(རྣམས|ཆེན་པོ|ཚོ|སྣ་ཚོགས)་?>"r) OR (d.indef) OR num.xxx) (NEGATE 2 ("<ཆར་>") LINK 0 num.xxx) ;
+
+#155b: Finding count nouns
+REMOVE (n.mass) (0 ("<ཆུ་>") LINK 0 (n.count)) (1 ("<བརྒལ(་བ)?་?>"r)) ;
+
+#155c: Finding count nouns
+SELECT (n.count) (-2 ("<ཡིད་>")) (-1 ("<བཞིན་>")) (0 ("<ནོར་བུ་?>"r)) ;
+
+#155d: Finding mass nouns
+REMOVE (n.count) (0 (n.mass) LINK NOT 0 ("<(ཡི་གེ|ས|གོས|ཟངས)་?>"r)) (NOT 1 ("<རེ་>") OR ("<དག་>")) ;
+
+#155e: Precluding sa as a mass noun
+REMOVE (n.mass) (0 ("<ས་>")) (1 ("<ལ་?>"r)) ;
+
+#156a: Checking the consistency of mi dgaḥ ba
+
+#156b: Checking the consistency of mi dgaḥ ba
+
+#157a: Checking the consistency of de ḥi tshe
+
+#157b: Checking the consistency of de ḥi tshe
+
+#999: Assign [null] to words without tags

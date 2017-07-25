@@ -254,10 +254,10 @@ REMOVE (v.imp) (0 (n.count)) (1 ("<(གོ|ཏོ||དོ|བོ|མོ|རོ|�
 
 #024c: Isolating chos [n.count]
 
+#024x: Isolating phyag [n.count]
+
 #024x: Precluding ḥdra [n.rel]
 REMOVE (n.rel) (-1 ("<དང་>")) (0 ("<འདྲ་?>"r)) ;
-
-#024x: Isolating phyag [n.count]
 
 #025: Precluding dpag [n.count]
 REMOVE (n.count) (0 ("<དཔག་>")) (1 ("<ཏུ་>")) (2 ("<མེད(་པ)?་?>"r)) ;

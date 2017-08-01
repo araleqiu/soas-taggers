@@ -786,10 +786,10 @@ REMOVE (n.count) (-1C d.xxx OR n.xxx OR num.xxx OR (p.pers)) (0 ("<ལ་>")) (1
 SELECT (case.all) (0 ("<ལ་>")) (1 ("<སོགས་པ་?>"r)) ;
 
 #098a: Specifying daṅ as a case marker with certain verbs
-REMOVE (cv.ass) (0 (case.ass)) (1C verbal LINK 0 ("<(བཅས|མཐུན|ལྡན|མཚུངས|སྦྱར)(་པ)?་?>"r)) ;
+REMOVE (cv.ass) (0 (case.ass)) (1C verbal LINK 0 ("<(བཅས|མཐུན|ལྡན|མཚུངས)(་པ)?་?>"r)) ;
 
 #098a: Specifying daṅ as a case marker with certain verbs
-REMOVE (cv.ass) (0 (case.ass)) (1C verbal LINK 0 ("<(བཅས|མཐུན|ལྡན|མཚུངས)(་པ)?་?>"r)) ;
+REMOVE (cv.ass) (0 (case.ass)) (1C verbal LINK 0 ("<(བཅས|མཐུན|ལྡན|མཚུངས|སྦྱར)(་པ)?་?>"r)) ;
 
 #098b: Locating nouns before daṅ when specified as a case marker with certain verbs
 REMOVE v.xxx (0 n.xxx) (1C (case.ass)) ;
